@@ -31,7 +31,7 @@ const Header = () => {
                                 ? "text-blue-500"
                                 : "text-gray-400 hover:text-blue-500"
                         }`}
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/home")}
                     >
                         <Home className="w-6 h-6" />
                     </button>
