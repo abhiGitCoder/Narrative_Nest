@@ -8,6 +8,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 class Register extends Authenticatable implements JWTSubject
 {
     protected $fillable = [
+        'name',
         'username',
         'email',
         'password',

@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import CategorySection from "../components/CategorySection";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
-import CategorySection from "../components/CategorySection";
 import NowPlayingBar from "../components/NowPlayingBar";
 
 const featuredContent = [

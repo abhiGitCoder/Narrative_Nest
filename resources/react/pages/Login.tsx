@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import axios from "axios";
+import Cookies from 'js-cookie';
 import { Eye, EyeOff } from "lucide-react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -10,6 +12,8 @@ const Login = () => {
         password: "",
     });
     const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,6 +21,14 @@ const Login = () => {
             ...prev,
             [name]: value,
         }));
+        // Clear errors when user starts typing
+        if (errors[name]) {
+            setErrors((prev) => ({
+                ...prev,
+                [name]: "",
+            }));
+        }
+        setApiError("");
     };
 
     const validateForm = () => {
@@ -34,11 +46,39 @@ const Login = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            // If validation passes, navigate to home
-            navigate("/home");
+            setIsLoading(true);
+            setApiError("");
+
+            try {
+                const response = await axios.post('/api/login', {
+                    login: formData.email,
+                    password: formData.password
+                });
+
+                if (response.data.status === "success") {
+                    // Store token in cookie
+                    const token = response.data.data.authorization.token;
+                    Cookies.set('_ut', token, { 
+                        expires: 7, // Cookie expires in 7 days
+                        secure: true, // Cookie only sent over HTTPS
+                        sameSite: 'strict' // Protect against CSRF
+                    });
+
+                    // Navigate to home page
+                    navigate("/home");
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                setApiError(
+                    error.response?.data?.message || 
+                    "An error occurred during login. Please try again."
+                );
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -51,6 +91,12 @@ const Login = () => {
                     </h1>
                 </div>
 
+                {apiError && (
+                    <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg">
+                        {apiError}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -62,6 +108,7 @@ const Login = () => {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="Enter email"
+                            disabled={isLoading}
                             className={`w-full px-3 py-2 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                                 errors.email
                                     ? "border-red-500"
@@ -86,6 +133,7 @@ const Login = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 placeholder="Enter password"
+                                disabled={isLoading}
                                 className={`w-full px-3 py-2 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                                     errors.password
                                         ? "border-red-500"
@@ -96,6 +144,7 @@ const Login = () => {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+                                disabled={isLoading}
                             >
                                 {showPassword ? (
                                     <EyeOff size={20} />
@@ -113,9 +162,10 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition-colors mt-8"
+                        disabled={isLoading}
+                        className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition-colors mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Log In
+                        {isLoading ? "Logging in..." : "Log In"}
                     </button>
 
                     <div className="text-center">
