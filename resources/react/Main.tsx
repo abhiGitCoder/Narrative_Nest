@@ -7,6 +7,10 @@ import LoginPage from "./pages/Login";
 import Music from "./pages/Music";
 import Stories from "./pages/Stories";
 import Podcasts from "./pages/Podcasts";
+import Search from "./pages/Search";
+import User from "./pages/User";
+import Notifications from "./pages/Notifications";
+import Upload from "./pages/Upload";
 
 // import '../../css/app.css';
 
@@ -21,6 +25,10 @@ function Main() {
                     <Route path="/music" element={<Music />} />
                     <Route path="/stories" element={<Stories />} />
                     <Route path="/podcasts" element={<Podcasts />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/user" element={<User />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/upload" element={<Upload />} />
                 </Routes>
             </BrowserRouter>
         </div>
