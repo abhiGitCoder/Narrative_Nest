@@ -21,7 +21,7 @@ function Main() {
                 <Routes>
                     <Route path="/home" element={<Home />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/" element={<LoginPage />} />
                     <Route path="/music" element={<Music />} />
                     <Route path="/stories" element={<Stories />} />
                     <Route path="/podcasts" element={<Podcasts />} />
