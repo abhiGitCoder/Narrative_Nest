@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +12,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed content types
+        DB::table('content_types')->insert([
+            ['name' => 'stories'],
+            ['name' => 'podcasts'],
+            ['name' => 'music'],
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed genres
+        DB::table('genres')->insert([
+            // Story genres
+            ['name' => 'fiction', 'category' => 'stories'],
+            ['name' => 'non-fiction', 'category' => 'stories'],
+            ['name' => 'fantasy', 'category' => 'stories'],
+            
+            // Podcast genres
+            ['name' => 'tech', 'category' => 'podcasts'],
+            ['name' => 'culture', 'category' => 'podcasts'],
+            ['name' => 'education', 'category' => 'podcasts'],
+            
+            // Music genres
+            ['name' => 'rock', 'category' => 'music'],
+            ['name' => 'jazz', 'category' => 'music'],
+            ['name' => 'classical', 'category' => 'music'],
         ]);
     }
 }

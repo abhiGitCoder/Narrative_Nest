@@ -15,3 +15,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('logout', [RegisterController::class, 'logout']);
     Route::post('refresh', [RegisterController::class, 'refresh']);
 });
+
+Route::get('stories', [StoryController::class, 'index']);
+Route::get('stories/{story}', [StoryController::class, 'show']);
