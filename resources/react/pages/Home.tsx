@@ -1,70 +1,90 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategorySection from "../components/CategorySection";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
 import NowPlayingBar from "../components/NowPlayingBar";
 
-const featuredContent = [
-    {
-        title: "The Odyssey",
-        description: "An epic Greek poem attributed to Homer",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M200 80 L300 200 L100 200 Z' fill='%234B5563'/%3E%3Ccircle cx='250' cy='100' r='20' fill='%23F59E0B'/%3E%3Cpath d='M150 140 C100 140, 300 140, 250 140 S300 160, 250 180' fill='none' stroke='%2360A5FA' stroke-width='8'/%3E%3C/svg%3E",
-        type: "Stories",
-    },
-    {
-        title: "Jazz Classics",
-        description: "A collection of timeless jazz masterpieces",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Ccircle cx='200' cy='120' r='60' fill='%234B5563'/%3E%3Cpath d='M200 80 L200 160 M180 140 L220 140' stroke='%23F59E0B' stroke-width='8'/%3E%3C/svg%3E",
-        type: "Music",
-    },
-    {
-        title: "Ancient Tales",
-        description: "Stories from ancient civilizations",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M100 200 L200 100 L300 200 Z' fill='%234B5563'/%3E%3Ccircle cx='200' cy='80' r='20' fill='%23F59E0B'/%3E%3C/svg%3E",
-        type: "Stories",
-    },
-    {
-        title: "Rock Legends",
-        description: "Greatest hits from rock legends",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M150 120 L250 120 M200 70 L200 170' stroke='%23F59E0B' stroke-width='12'/%3E%3C/svg%3E",
-        type: "Music",
-    },
-];
-
-const newReleases = [
-    {
-        title: "Modern Tales",
-        description: "A collection of contemporary stories",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Crect x='100' y='60' width='200' height='120' fill='%234B5563'/%3E%3Ccircle cx='200' cy='120' r='40' fill='%23F59E0B'/%3E%3C/svg%3E",
-        type: "Stories",
-    },
-    {
-        title: "Rock Anthems",
-        description: "The greatest rock anthems of all time",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M100 180 Q200 60 300 180' stroke='%23F59E0B' stroke-width='8' fill='none'/%3E%3C/svg%3E",
-        type: "Music",
-    },
-    {
-        title: "Tech Talks",
-        description: "Latest discussions in technology",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Ccircle cx='200' cy='120' r='80' fill='%234B5563' stroke='%23F59E0B' stroke-width='8'/%3E%3C/svg%3E",
-        type: "Podcasts",
-    },
-    {
-        title: "Nature Stories",
-        description: "Tales from the wild",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M100 200 C150 180, 250 180, 300 200' fill='%234B5563'/%3E%3Ccircle cx='200' cy='100' r='30' fill='%23F59E0B'/%3E%3C/svg%3E",
-        type: "Stories",
-    },
-];
-
 const Home = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [homeData, setHomeData] = useState({
+        featuredContent: [],
+        newReleases: []
+    });
+
+    useEffect(() => {
+        fetchHomeData();
+    }, []);
+
+    const fetchHomeData = async () => {
+        try {
+            const response = await fetch("/api/home-data");
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to fetch home data");
+            }
+
+            if (result.success) {
+                const formattedData = {
+                    featuredContent: formatContentItems(result.data.featured_content),
+                    newReleases: formatContentItems(result.data.new_releases)
+                };
+                setHomeData(formattedData);
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const formatContentItems = (items) => {
+        return items.map(item => ({
+            title: item.title,
+            description: item.description,
+            image: item.cover_image || getPlaceholderImage(item.content_type),
+            type: capitalizeFirstLetter(item.content_type),
+            creator: item.creator,
+            duration: item.duration,
+            id: item.id
+        }));
+    };
+
+    const getPlaceholderImage = (contentType) => {
+        const placeholders = {
+            story: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M100 200 L200 100 L300 200 Z' fill='%234B5563'/%3E%3Ccircle cx='200' cy='80' r='20' fill='%23F59E0B'/%3E%3C/svg%3E",
+            music: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Cpath d='M150 120 L250 120 M200 70 L200 170' stroke='%23F59E0B' stroke-width='12'/%3E%3C/svg%3E",
+            podcast: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'%3E%3Crect width='400' height='240' fill='%23374151'/%3E%3Ccircle cx='200' cy='120' r='60' fill='%234B5563'/%3E%3Cpath d='M200 80 L200 160 M180 140 L220 140' stroke='%23F59E0B' stroke-width='8'/%3E%3C/svg%3E"
+        };
+        return placeholders[contentType] || placeholders.story;
+    };
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
 
     const handleContentClick = (type) => {
         navigate(`/${type.toLowerCase()}`);
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-red-500 text-xl">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-900 text-white">
@@ -74,12 +94,12 @@ const Home = () => {
             <main className="pb-20">
                 <CategorySection
                     title="Featured Content"
-                    items={featuredContent}
+                    items={homeData.featuredContent}
                     onItemClick={handleContentClick}
                 />
                 <CategorySection
                     title="New Releases"
-                    items={newReleases}
+                    items={homeData.newReleases}
                     onItemClick={handleContentClick}
                 />
             </main>
