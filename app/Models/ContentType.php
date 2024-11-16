@@ -11,13 +11,13 @@ class ContentType extends Model
         'name'
     ];
 
-    public function stories(): HasMany
-    {
-        return $this->hasMany(Stories::class);
-    }
+    // public function stories(): HasMany
+    // {
+    //     return $this->hasMany(Stories::class);
+    // }
 
-    public function podcasts(): HasMany
-    {
-        return $this->hasMany(Podcast::class);
-    }
+    // public function podcasts(): HasMany
+    // {
+    //     return $this->hasMany(Podcast::class);
+    // }
 }

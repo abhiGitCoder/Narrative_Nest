@@ -18,12 +18,12 @@ class Stories extends Model
     protected $fillable = [
         'title',
         'description',
-        'content_type_id',
+        'content_type',
         'author',
         'cover_image',
         'read_time',
         'published_date',
-        'genre_id',
+        'genres',
         'is_featured',
         'is_new_release'
     ];
@@ -45,23 +45,15 @@ class Stories extends Model
      *
      * @var array
      */
-    protected $with = ['contentType', 'genre'];
 
     /**
      * Get the content type that owns the story.
      */
-    public function contentType(): BelongsTo
-    {
-        return $this->belongsTo(ContentType::class, 'content_type_id');
-    }
+
 
     /**
      * Get the genre that owns the story.
      */
-    public function genre(): BelongsTo
-    {
-        return $this->belongsTo(Genre::class, 'genre_id');
-    }
 
     /**
      * Scope a query to only include featured stories.
@@ -88,12 +80,12 @@ class Stories extends Model
             'id',
             'title',
             'description',
-            'content_type_id',
+            'content_type',
             'author as creator',
             'cover_image',
             'read_time as duration',
             'published_date',
-            'genre_id'
+            'genres'
         ]);
     }
 }

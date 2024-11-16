@@ -14,7 +14,7 @@ const Navigation = ({ activeTab }) => {
                             ? "text-white border-b-2 border-white"
                             : "text-gray-400"
                     }`}
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/home")}
                 >
                     All
                 </button>

@@ -11,6 +11,7 @@ import Notifications from "./pages/Notifications";
 import Upload from "./pages/Upload";
 import Register from "./pages/Register";
 import Stories from "./pages/Stories";
+import NowPlayingPage from "./pages/NowPlaying";
 
 // import '../../css/app.css';
 
@@ -30,6 +31,7 @@ function Main() {
                     <Route path="/user" element={<User />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/upload" element={<Upload />} />
+                    <Route path="/now-playing" element={<NowPlayingPage />} />
                 </Routes>
             </BrowserRouter>
         </div>

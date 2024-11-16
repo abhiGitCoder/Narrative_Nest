@@ -39,7 +39,7 @@ class HomeController extends Controller
     private function getFeaturedContent(): array
     {
         // Get featured stories
-        $stories = Stories::where('is_featured', true)
+        $stories = Stories::where('is_featured', 1)
             ->select([
                 'id',
                 'title',
@@ -48,6 +48,8 @@ class HomeController extends Controller
                 'cover_image',
                 'read_time as duration',
                 'published_date',
+                'audio_url',
+                'genres', // Using the genres column directly
             ])
             ->orderByDesc('published_date')
             ->get()
@@ -56,7 +58,7 @@ class HomeController extends Controller
             });
 
         // Get featured podcasts
-        $podcasts = Podcast::where('is_featured', true)
+        $podcasts = Podcast::where('is_featured', 1)
             ->select([
                 'id',
                 'title',
@@ -74,7 +76,7 @@ class HomeController extends Controller
             });
 
         // Get featured music
-        $music = Music::where('is_featured', true)
+        $music = Music::where('is_featured', 1)
             ->select([
                 'id',
                 'title',
@@ -98,7 +100,7 @@ class HomeController extends Controller
     private function getNewReleases(): array
     {
         // Get new release stories
-        $stories = Stories::where('is_new_release', true)
+        $stories = Stories::where('is_new_release', 1)
             ->select([
                 'id',
                 'title',
@@ -107,6 +109,8 @@ class HomeController extends Controller
                 'cover_image',
                 'read_time as duration',
                 'published_date',
+                'audio_url',
+                'genres', // Using the genres column directly
             ])
             ->orderByDesc('published_date')
             ->get()
@@ -115,7 +119,7 @@ class HomeController extends Controller
             });
 
         // Get new release podcasts
-        $podcasts = Podcast::where('is_new_release', true)
+        $podcasts = Podcast::where('is_new_release', 1)
             ->select([
                 'id',
                 'title',
@@ -133,7 +137,7 @@ class HomeController extends Controller
             });
 
         // Get new release music
-        $music = Music::where('is_new_release', true)
+        $music = Music::where('is_new_release', 1)
             ->select([
                 'id',
                 'title',
@@ -163,33 +167,26 @@ class HomeController extends Controller
         
         $maxItems = ceil($limit / 3);
         
-        // Initialize counters
         $storyIndex = 0;
         $podcastIndex = 0;
         $musicIndex = 0;
         
-        // Fill the result array with alternating content types
         while (count($result) < $limit) {
-            // Add story if available
             if ($storyIndex < count($storiesArray) && count($result) < $limit) {
                 $result[] = $storiesArray[$storyIndex];
                 $storyIndex++;
             }
             
-            // Add podcast if available
             if ($podcastIndex < count($podcastsArray) && count($result) < $limit) {
                 $result[] = $podcastsArray[$podcastIndex];
                 $podcastIndex++;
             }
             
-            // Add music if available
             if ($musicIndex < count($musicArray) && count($result) < $limit) {
                 $result[] = $musicArray[$musicIndex];
                 $musicIndex++;
             }
             
-            // If we've run out of all content types but haven't reached the limit,
-            // start over from the beginning of the remaining content
             if ($storyIndex >= count($storiesArray) && 
                 $podcastIndex >= count($podcastsArray) && 
                 $musicIndex >= count($musicArray) && 

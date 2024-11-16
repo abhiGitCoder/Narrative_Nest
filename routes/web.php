@@ -35,3 +35,8 @@ Route::get('/notifications', function () {
 Route::get('/upload', function () {
     return view('welcome');
 });
+Route::get('/now-playing', function () {
+    return view('welcome');
+});
+
+
