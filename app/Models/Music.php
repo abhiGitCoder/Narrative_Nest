@@ -4,21 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Podcast extends Model
+class Music extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'title',
         'description',
-        'content_type_id',
-        'host',
+        'content_type',
+        'artist',
         'cover_image',
         'duration',
         'published_date',
-        'genre_id',
+        'genre',
         'is_featured',
         'is_new_release',
         'audio_url'
@@ -30,18 +29,6 @@ class Podcast extends Model
         'published_date' => 'datetime',
         'duration' => 'integer'
     ];
-
-    protected $with = ['contentType', 'genre'];
-
-    public function contentType(): BelongsTo
-    {
-        return $this->belongsTo(ContentType::class);
-    }
-
-    public function genre(): BelongsTo
-    {
-        return $this->belongsTo(Genre::class);
-    }
 
     public function scopeFeatured($query)
     {
