@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import Cookies from 'js-cookie';
 import {
-    User as UserIcon,
-    Settings,
     BookOpen,
-    Music,
     Headphones,
     LogOut,
+    Music,
+    Settings,
+    User as UserIcon,
 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 
 const User = () => {
     const [activeTab, setActiveTab] = useState("profile");
+    const [userProfile, setUserProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const userProfile = {
-        name: "John Doe",
-        email: "john.doe@example.com",
+    // Default values for missing data
+    const defaultUserData = {
+        name: "Loading...",
+        email: "Loading...",
         joinDate: "January 2024",
         preferences: {
             theme: "dark",
@@ -27,6 +32,78 @@ const User = () => {
             podcastsListened: 23,
         },
     };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userToken = Cookies.get('_ut');
+                
+                if (!userToken) {
+                    throw new Error('Authentication token not found');
+                }
+
+                const response = await fetch('/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const apiData = await response.json();
+
+                // Map the API response structure to our expected structure
+                const userData = {
+                    ...defaultUserData,
+                    name: apiData.data.user.name || defaultUserData.name,
+                    email: apiData.data.user.email || defaultUserData.email,
+                    joinDate: new Date(apiData.data.user.created_at).toLocaleDateString('en-US', {
+                        month: 'long',
+                        year: 'numeric'
+                    }),
+                    preferences: {
+                        ...defaultUserData.preferences,
+                    },
+                    stats: {
+                        ...defaultUserData.stats,
+                    },
+                };
+
+                setUserProfile(userData);
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-xl text-red-500">Error: {error}</div>
+            </div>
+        );
+    }
+
+    if (!userProfile) {
+        return null;
+    }
 
     const renderContent = () => {
         switch (activeTab) {
@@ -111,10 +188,7 @@ const User = () => {
                                         <input
                                             type="checkbox"
                                             className="sr-only peer"
-                                            defaultChecked={
-                                                userProfile.preferences
-                                                    .notifications
-                                            }
+                                            defaultChecked={userProfile.preferences.notifications}
                                         />
                                         <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
@@ -125,9 +199,7 @@ const User = () => {
                                         <input
                                             type="checkbox"
                                             className="sr-only peer"
-                                            defaultChecked={
-                                                userProfile.preferences.autoplay
-                                            }
+                                            defaultChecked={userProfile.preferences.autoplay}
                                         />
                                         <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
