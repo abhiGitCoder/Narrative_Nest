@@ -156,4 +156,57 @@ class RegisterController extends Controller
             ], 500);
         }
     }
+
+    public function getUser()
+{
+    try {
+        // Get authenticated user
+        $user = JWTAuth::parseToken()->authenticate();
+        
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'created_at' => $user->created_at
+                ]
+            ]
+        ]);
+
+    } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Token has expired'
+        ], 401);
+        
+    } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Token is invalid'
+        ], 401);
+        
+    } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Authorization token not found'
+        ], 401);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to get user data',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }
