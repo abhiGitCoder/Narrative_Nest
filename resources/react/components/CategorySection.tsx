@@ -11,7 +11,7 @@ const CategorySection = ({ title, items, onItemClick }) => (
                         className="w-72 flex-none cursor-pointer"
                         onClick={() => onItemClick?.(item)}
                     >
-                        <div className="aspect-video rounded-lg overflow-hidden bg-gray-800">
+                        <div className="aspect-video rounded-lg overflow-hidden bg-gray-500">
                             <img
                                 src={item.image}
                                 alt={item.title}
