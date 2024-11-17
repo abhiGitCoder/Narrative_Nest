@@ -231,4 +231,61 @@ class HomeController extends Controller
             ], 500);
         }
     }
+public function musicData(): JsonResponse
+{
+    try {
+        // Fetch all music
+        $music = Music::select([
+            'id',
+            'title',
+            'music_language',
+            'description',
+            'content_type',
+            'artist as creator',
+            'cover_image',
+            'duration',
+            'album',
+            'genre',
+            'audio_url',
+            'published_date',
+            'is_featured',
+            'is_new_release'
+        ])
+        ->orderByDesc('published_date')
+        ->get()
+        ->map(function ($item) {
+            // Format the data if needed
+            return array_merge($item->toArray(), [
+                'duration' => $this->formatDuration($item->duration),
+                'published_date' => $item->published_date->format('Y-m-d H:i:s'),
+            ]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $music,
+            'message' => 'All music retrieved successfully',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error retrieving music',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// Helper function to format duration if needed
+private function formatDuration($duration): string
+{
+    try {
+        // Assuming duration is stored in seconds
+        $minutes = floor($duration / 60);
+        $seconds = $duration % 60;
+        
+        return sprintf("%02d:%02d", $minutes, $seconds);
+    } catch (\Exception $e) {
+        return $duration; // Return original value if formatting fails
+    }
+}
 }
