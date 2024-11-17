@@ -37,20 +37,6 @@ const Music = () => {
         <div className="min-h-screen bg-gray-900 text-white">
             <Header />
             <Navigation activeTab="music" />
-
-            <main className="pb-20">
-                {Object.entries(musicCategories).map(([category, items]) => (
-                    <CategorySection
-                        key={category}
-                        title={
-                            category.charAt(0).toUpperCase() + category.slice(1)
-                        }
-                        items={items}
-                    />
-                ))}
-            </main>
-
-            <NowPlayingBar />
         </div>
     );
 };

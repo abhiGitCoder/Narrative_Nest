@@ -49,7 +49,7 @@ class HomeController extends Controller
                 'read_time as duration',
                 'published_date',
                 'audio_url',
-                'genres', // Using the genres column directly
+                'genres', 
             ])
             ->orderByDesc('published_date')
             ->get()
@@ -110,7 +110,7 @@ class HomeController extends Controller
                 'read_time as duration',
                 'published_date',
                 'audio_url',
-                'genres', // Using the genres column directly
+                'genres',
             ])
             ->orderByDesc('published_date')
             ->get()
@@ -198,5 +198,37 @@ class HomeController extends Controller
         }
         
         return $result;
+    }
+
+    public function storyData(): JsonResponse
+    {
+        try {
+            // Fetch all stories
+            $stories = Stories::select([
+                'id',
+                'title',
+                'description',
+                'author as creator',
+                'cover_image',
+                'read_time as duration',
+                'published_date',
+                'audio_url',
+                'genres',
+            ])
+            ->orderByDesc('published_date')
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $stories,
+                'message' => 'All stories retrieved successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving stories',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
