@@ -17,10 +17,7 @@ const Header = () => {
         <header className="px-4 py-3 sticky top-0 bg-gray-900 z-10 border-b border-gray-800">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                    <h1
-                        className="text-lg font-semibold cursor-pointer"
-                        onClick={() => navigate("/")}
-                    >
+                    <h1 className="text-lg font-semibold cursor-pointer">
                         NarrativeNest
                     </h1>
                 </div>

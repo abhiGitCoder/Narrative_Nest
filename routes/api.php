@@ -18,3 +18,4 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('/home-data', [HomeController::class, 'homeData']);
+Route::get('/story-data', [HomeController::class, 'storyData']);
