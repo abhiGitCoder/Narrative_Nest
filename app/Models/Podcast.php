@@ -52,4 +52,9 @@ class Podcast extends Model
     {
         return $query->where('is_new_release', true);
     }
+
+    public function userUpload()
+    {
+        return $this->morphOne(UserUpload::class, 'content');
+    }
 }

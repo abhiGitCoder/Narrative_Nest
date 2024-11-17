@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UploadController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -16,10 +17,14 @@ Route::middleware('auth:api')->group(function () {
     Route::post('logout', [RegisterController::class, 'logout']);
     Route::post('refresh', [RegisterController::class, 'refresh']);
     Route::get('/user', [RegisterController::class, 'getUser']);
+    Route::get('/check-session', [RegisterController::class, 'checkSession']);
 });
 
 Route::get('/home-data', [HomeController::class, 'homeData']);
 Route::get('/story-data', [HomeController::class, 'storyData']);
 Route::get('/music-data', [HomeController::class, 'musicData']);
 
-// Route::middleware('auth:api')->get('/user', [RegisterController::class, 'getUser']);
+Route::middleware('auth:api')->group(function () {
+    Route::post('/upload', [UploadController::class, 'upload']);
+    Route::delete('/content', [UploadController::class, 'delete']);
+});

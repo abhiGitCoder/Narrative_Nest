@@ -88,4 +88,9 @@ class Stories extends Model
             'genres'
         ]);
     }
+
+    public function userUpload()
+    {
+        return $this->morphOne(UserUpload::class, 'content');
+    }
 }

@@ -209,4 +209,77 @@ class RegisterController extends Controller
         ], 500);
     }
 }
+public function checkSession()
+    {
+        try {
+            // Attempt to get the authenticated user
+            $user = JWTAuth::parseToken()->authenticate();
+            
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found',
+                    'isValid' => false
+                ], 404);
+            }
+
+            // Get token instance
+            $token = JWTAuth::getToken();
+            
+            // Get token payload
+            $payload = JWTAuth::getPayload($token)->toArray();
+            
+            // Calculate remaining time
+            $expiresAt = $payload['exp'];
+            $currentTime = time();
+            $remainingTime = $expiresAt - $currentTime;
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Session is valid',
+                'data' => [
+                    'isValid' => true,
+                    'expiresIn' => $remainingTime,
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'username' => $user->username,
+                        'email' => $user->email
+                    ]
+                ]
+            ]);
+
+        } catch (TokenExpiredException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token has expired',
+                'isValid' => false,
+                'error' => 'token_expired'
+            ], 401);
+            
+        } catch (TokenInvalidException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is invalid',
+                'isValid' => false,
+                'error' => 'token_invalid'
+            ], 401);
+            
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token is missing',
+                'isValid' => false,
+                'error' => 'token_missing'
+            ], 401);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Session check failed',
+                'isValid' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
