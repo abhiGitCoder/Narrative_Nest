@@ -1,10 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CategorySection from "../components/CategorySection";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
 import NowPlayingBar from "../components/NowPlayingBar";
 
+// Enhanced CategorySection Component
+const CategorySection = ({ title, items, onItemClick }) => {
+  return (
+    <section className="mt-6">
+      <h2 className="text-2xl font-bold mb-4">{title}</h2>
+      <div className="relative">
+        <div className="flex overflow-x-auto scrollbar-hide gap-4 pb-4" style={{
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+        }}>
+          {items.map((item, index) => (
+            <div 
+              key={item.id || index}
+              className="flex-none w-64 cursor-pointer transition-transform hover:scale-105"
+              onClick={() => onItemClick(item.type)}
+            >
+              <div className="bg-[#282828] rounded-lg overflow-hidden">
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-semibold truncate">{item.title}</h3>
+                  <p className="text-gray-400 text-sm mt-1 line-clamp-2">{item.description}</p>
+                  <div className="flex items-center mt-2 text-sm text-gray-400">
+                    <span>{item.type}</span>
+                    {item.duration && (
+                      <>
+                        <span className="mx-2">•</span>
+                        <span>{item.duration}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Enhanced Home Component
 const Home = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
@@ -72,39 +116,69 @@ const Home = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-                <div className="text-xl">Loading...</div>
+            <div className="min-h-screen bg-[#121212] text-white flex items-center justify-center">
+                <div className="text-xl animate-pulse">Loading...</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-                <div className="text-red-500 text-xl">{error}</div>
+            <div className="min-h-screen bg-[#121212] text-white flex items-center justify-center">
+                <div className="text-red-500 text-xl bg-[#282828] p-4 rounded-lg shadow-lg">{error}</div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
-            <Header />
-            <Navigation activeTab="all" />
+        <div className="relative min-h-screen bg-[#121212] text-white">
+            {/* Hide status bar */}
+            <div className="fixed top-0 left-0 right-0 h-8 bg-[#121212] -mt-8" />
+            
+            {/* Main content wrapper */}
+            <div className="flex flex-col h-screen">
+                {/* Header section */}
+                <div className="bg-gradient-to-b from-[#232323] to-[#121212] pb-4">
+                    <Header />
+                    <Navigation activeTab="all" />
+                </div>
 
-            <main className="pb-20">
-                <CategorySection
-                    title="Featured Content"
-                    items={homeData.featuredContent}
-                    onItemClick={handleContentClick}
-                />
-                <CategorySection
-                    title="New Releases"
-                    items={homeData.newReleases}
-                    onItemClick={handleContentClick}
-                />
-            </main>
+                {/* Scrollable main content with hidden scrollbar */}
+                <main className="flex-1 overflow-y-auto scrollbar-hide" style={{
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                }}>
+                    <style>
+                        {`
+                            .scrollbar-hide::-webkit-scrollbar {
+                                display: none;
+                            }
+                            .scrollbar-hide {
+                                -ms-overflow-style: none;
+                                scrollbar-width: none;
+                            }
+                        `}
+                    </style>
+                    <div className="px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+                        <CategorySection
+                            title="Featured Content"
+                            items={homeData.featuredContent}
+                            onItemClick={handleContentClick}
+                        />
+                        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8" />
+                        <CategorySection
+                            title="New Releases"
+                            items={homeData.newReleases}
+                            onItemClick={handleContentClick}
+                        />
+                    </div>
+                </main>
 
-            <NowPlayingBar />
+                {/* Now playing bar */}
+                <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#181818] to-[#282828] shadow-lg">
+                    <NowPlayingBar />
+                </div>
+            </div>
         </div>
     );
 };

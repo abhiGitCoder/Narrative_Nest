@@ -4,14 +4,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/Login";
 import Music from "./pages/Music";
-import Podcasts from "./pages/Podcasts";
-import Search from "./pages/Search";
-import User from "./pages/User";
 import Notifications from "./pages/Notifications";
-import Upload from "./pages/Upload";
-import Register from "./pages/Register";
-import Stories from "./pages/Stories";
 import NowPlayingPage from "./pages/NowPlaying";
+import Podcasts from "./pages/Podcasts";
+import Register from "./pages/Register";
+import Search from "./pages/Search";
+import Stories from "./pages/Stories";
+import Upload from "./pages/Upload";
+import User from "./pages/User";
 
 // import '../../css/app.css';
 
