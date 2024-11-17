@@ -75,10 +75,9 @@ const Home = () => {
         setCurrentlyPlaying(item);
         setIsPlaying(true);
     };
-
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center hide-scrollbar">
+            <div className="min-h-screen pt-[60px] bg-gray-900 text-white flex items-center justify-center">
                 <div className="text-xl">Loading...</div>
             </div>
         );
@@ -86,29 +85,30 @@ const Home = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center hide-scrollbar">
+            <div className="min-h-screen pt-[60px] bg-gray-900 text-white flex items-center justify-center">
                 <div className="text-red-500 text-xl">{error}</div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white hide-scrollbar overflow-x-hidden">
+        <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
             <Header />
-            <Navigation activeTab="all" />
-
-            <main className="pb-20 overflow-hidden">
-                <CategorySection
-                    title="Featured Content"
-                    items={homeData.featuredContent}
-                    onItemClick={handleContentClick}
-                />
-                <CategorySection
-                    title="New Releases"
-                    items={homeData.newReleases}
-                    onItemClick={handleContentClick}
-                />
-            </main>
+            <div className="pt-[60px]">
+                <Navigation activeTab="all" />
+                <main className="pb-20">
+                    <CategorySection
+                        title="Featured Content"
+                        items={homeData.featuredContent}
+                        onItemClick={handleContentClick}
+                    />
+                    <CategorySection
+                        title="New Releases"
+                        items={homeData.newReleases}
+                        onItemClick={handleContentClick}
+                    />
+                </main>
+            </div>
 
             {currentlyPlaying && (
                 <NowPlayingBar

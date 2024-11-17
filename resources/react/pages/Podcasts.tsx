@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import CategorySection from "../components/CategorySection";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
-import CategorySection from "../components/CategorySection";
 import NowPlayingBar from "../components/NowPlayingBar";
 
 const PodcastsCategories = {
@@ -24,9 +24,12 @@ const PodcastsCategories = {
 };
 
 const Podcasts = () => {
+    const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
     return (
         <div className="min-h-screen bg-gray-900 text-white">
             <Header />
+            <div className="pt-[60px]">
             <Navigation activeTab="podcasts" />
 
             <main className="pb-20">
@@ -41,7 +44,14 @@ const Podcasts = () => {
                 ))}
             </main>
 
-            <NowPlayingBar />
+            {currentlyPlaying && (
+                <NowPlayingBar
+                    item={currentlyPlaying}
+                    isPlaying={isPlaying}
+                    onPlayPauseClick={() => setIsPlaying(!isPlaying)}
+                />
+            )}
+            </div>
         </div>
     );
 };

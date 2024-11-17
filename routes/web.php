@@ -38,5 +38,7 @@ Route::get('/upload', function () {
 Route::get('/now-playing', function () {
     return view('welcome');
 });
-
+Route::get('/storyteller', function () {
+    return view('welcome');
+});
 

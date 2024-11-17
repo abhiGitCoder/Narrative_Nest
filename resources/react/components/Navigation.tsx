@@ -6,7 +6,7 @@ const Navigation = ({ activeTab }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="px-4 border-b border-gray-800 bg-gray-900 lg:mx-10 ">
+        <div className="px-4 border-b border-gray-800 bg-gray-900  pt=[60px] ">
             <nav className="flex space-x-6 overflow-x-auto hide-scrollbar">
                 <button
                     className={`py-2 whitespace-nowrap ${
@@ -47,6 +47,17 @@ const Navigation = ({ activeTab }) => {
                     onClick={() => navigate("/podcasts")}
                 >
                     Podcasts
+                </button>
+
+                <button
+                    className={`py-2 whitespace-nowrap ${
+                        activeTab === "storyteller"
+                            ? "text-white border-b-2 border-white"
+                            : "text-gray-400"
+                    }`}
+                    onClick={() => navigate("/storyteller")}
+                >
+                    Storyteller
                 </button>
             </nav>
         </div>

@@ -10,6 +10,7 @@ import Podcasts from "./pages/Podcasts";
 import Register from "./pages/Register";
 import Search from "./pages/Search";
 import Stories from "./pages/Stories";
+import StoryTeller from "./pages/StoryTeller";
 import Upload from "./pages/Upload";
 import User from "./pages/User";
 
@@ -32,6 +33,7 @@ function Main() {
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/upload" element={<Upload />} />
                     <Route path="/now-playing" element={<NowPlayingPage />} />
+                    <Route path="/storyteller" element={<StoryTeller/>}/>
                 </Routes>
             </BrowserRouter>
         </div>
