@@ -15,7 +15,10 @@ Route::post('login', [RegisterController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::post('logout', [RegisterController::class, 'logout']);
     Route::post('refresh', [RegisterController::class, 'refresh']);
+    Route::get('/user', [RegisterController::class, 'getUser']);
 });
 
 Route::get('/home-data', [HomeController::class, 'homeData']);
 Route::get('/story-data', [HomeController::class, 'storyData']);
+
+Route::middleware('auth:api')->get('/user', [RegisterController::class, 'getUser']);
