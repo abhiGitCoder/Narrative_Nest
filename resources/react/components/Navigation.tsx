@@ -6,7 +6,7 @@ const Navigation = ({ activeTab }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="px-4 border-b border-gray-800 bg-gray-900 z-10">
+        <div className="px-4 border-b border-gray-800 bg-gray-900 lg:mx-10 ">
             <nav className="flex space-x-6 overflow-x-auto hide-scrollbar">
                 <button
                     className={`py-2 whitespace-nowrap ${
